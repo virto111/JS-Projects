@@ -1315,12 +1315,10 @@ function getDistance(point) {
 }
 
 var closest = points.slice(1).reduce(function(min, point) {
-    debugger;
   if (getDistance(point) < min.distance) {
     min.point = point;
     min.distance = getDistance(point);
   }
-    debugger;
   return min;
 }, {
     point: points[0], 
