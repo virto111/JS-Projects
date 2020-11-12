@@ -899,17 +899,18 @@ class LinkedList {
       counter++;
     }
   }
-
+  /* ==========================================
+  ### LINKED LIST - WITH ITERATORS
+  ==============================================*/
   *[Symbol.interator]() {
     let node = this.head;
     while (node) {
       yield node;
-      node = next;
+      node = node.next;
     }
   }
-
   //* Above will work as this
-  //* const list = new List();
+  //* const list = new LinkedList();
   //* list.insertLast(1);
   //* list.insertLast(2);
   //* list.insertLast(3);
@@ -920,6 +921,321 @@ class LinkedList {
   //* }
 }
 
+/* ==========================================
+### LINKED LIST - FIND THE MIDPOINT
+==============================================*/
+function midpoint(list) {
+  let slow = list.getFirst(); //* list.head
+  let fast = list.getFirst(); //* fast will move with 2 elements by iteration
+
+  //* check the following 2 elements after the positon of [fast element]
+  while (fast.next && fast.next.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
+}
+
+/* ==========================================
+### CIRCULAR LINKED LIST
+==============================================*/
+//? To detect Circular Linked List we use the same approach with [slow, fast]
+function detectCircularList(list) {
+  let slow = list.getFirst();
+  let fast = list.getFirst();
+
+  while (fast.next && fast.next.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+
+    if (slow === fast) return true;
+  }
+
+  return false;
+}
+
+/* ==========================================
+### LINKED LIST - STEP BACK FROM THE TAIL
+==============================================*/
+//* Again this solution will be solved with [slow] and [fast] approach ;-)
+function fromLast(list, n) {
+  let slow = list.getFirst();
+  let fast = list.getFirst();
+
+  while (n > 0) {
+    fast = fast.next;
+    n--;
+  }
+
+  while (fast.next) {
+    slow = slow.next;
+    fast = fast.next;
+  }
+
+  return slow;
+}
+
+/* ==========================================
+### TREES
+==============================================*/
+/* 
+* Tree traversal:
+* -1- Breadth first traversal - iterate each level from left to right
+* -2- Depth first tracversal - always first go to the bottom of the tree, then back and the next to the bottom
+*/
+
+class TreeNode {
+  constructor(data) {
+    this.data = data;
+    this.children = [];
+  }
+
+  add(data) {
+    this.children.push(new TreeNode(data));
+  }
+
+  remove(data) {
+    this.children = this.children.filter((node) => node.data !== data);
+  }
+}
+
+class Tree {
+  constructor() {
+    this.root = null;
+  }
+
+  //* Breath first traverse
+  traverseBF(fn) {
+    const arr = [this.root];
+
+    while (arr.length) {
+      //* Take the first Node
+      const firstNode = arr.shift();
+      //* Push all Children in the Array
+      arr.push(...firstNode.children);
+      fn(firstNode);
+    }
+  }
+  //* Depth first traverse
+  //! Idential with traverseBF, only [push] is [unshift]
+  traverseDF() {
+    const arr = [this.root];
+
+    while (arr.length) {
+      //* Take the first Node
+      const firstNode = arr.shift();
+      arr.unshift(...firstNode.children);
+      fn(firstNode);
+    }
+  }
+}
+
+let tree = new Tree();
+tree.root = new TreeNode('a');
+tree.root.add('b');
+tree.root.add('c');
+tree.root.children[0].add('d');
+tree.root.children[0].add('e');
+let wantedArray = ['a', 'b', 'c', 'd', 'e'];
+/* ==========================================
+### TREE - LEVEL WIDTH
+==============================================*/
+//* For Tree Width we have to think about Breath first traversal!
+//?    Given:
+//?        0
+//?      / |  \
+//?    1   2   3
+//?    |       |
+//?    4       5
+//?    Answer: [1, 3, 2]
+function levelWidth(root) {
+  let arr = [root, 's'];
+  let counters = [0];
+
+  while (arr.length > 1) {
+    const node = arr.shift();
+
+    //* if 's' is the removed element, we have to add new counter
+    if (node === 's') {
+      counters.push(0);
+      arr.push('s');
+    } else {
+      arr.push(...node.children);
+      //* increment last counter
+      counters[counters.length - 1]++;
+    } 
+  }
+
+  return counters;
+}
+
+/* ==========================================
+### BINARY SEARCH TREE
+==============================================*/
+//* Binary Search Tree - each Node have always and only 2 cildren! 
+//* Sarch in Binary Tree means: 
+//*       children on the left are smaller than each Parent staring from the Root
+//*       children on the right are greater than the Root
+
+class BSTreeNode {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+
+  insert(data) {
+    if (data < this.data && this.left) {
+      this.left.insert(data);
+    } else if (data < this.data) {
+      this.left = new BSTreeNode(data);
+    } else if (data > this.data && this.right) {
+      this.right.insert(data);
+    } else if (data > this.data) {
+      this.right = new BSTreeNode(data);
+    }
+  }
+
+  //? Common Question might be to find Node with value of [3] for example
+  //* Check if math the value of data -> return the whole Node
+  contains(data) {
+    if (this.data === data) {
+      return this;
+    }
+
+    if (this.data < data && this.right) {
+      return this.right.contains(data);
+    } else if (this.data > data && this.left) {
+      return this.left.contains(data);
+    }
+
+    return null;
+  }
+}
+
+const node = new BSTreeNode(10);
+node.insert(5);
+node.insert(15);
+node.insert(20);
+node.insert(0);
+node.insert(-5);
+node.insert(3);
+
+
+/* ==========================================
+### VALIDATING BINARY SEARCH TREE
+==============================================*/
+
+function validate(node, min = null, max = null) {
+  if (max !== null && node.data > max) {
+    return false;
+  }
+  if (min !== null && node.data < min) {
+    return false;
+  }
+
+  //* moving to the [left] -> set the [max]
+  if (node.left && !validate(node.left, min, node.data)) {
+    return false;
+  }
+  //* moving to the [right] -> set the [min]
+  if (node.right && !validate(node.right, node.data, max)) {
+    return false;
+  }
+
+  return true;
+}
+
+/* ==========================================
+### EVENTS
+==============================================*/
+
+class Events {
+  on(eventName, callback) {}
+  trigger(eventName) {}
+  off(eventName) {}
+}
+
+/* ==========================================
+### SORTING WITH BUBBLE SORT
+==============================================*/
+//! BUBBLE SORT - bad for large data sets -> n ^ 2
+function bubleSort(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    //! we have to decrease each iteration, because one of the numbers is sorted each iteration -> (j < arr.length - i - 1)
+    for (let j = 0; j < arr.length - i - 1; j++) { //* (-1) is added since we are checking always one ahead. It is working, but is more optimised!
+      if (arr[j] > arr[j + 1]) {
+        const lesser = arr[j + 1];
+        arr[j + 1] = arr[j];
+        arr[j] = lesser;
+      }
+    }
+  }
+
+  return arr;
+}
+
+bubleSort([9,8,7,6]);
+
+/* ==========================================
+### SORTING WITH SELECTION SORT
+==============================================*/
+//! SELECTION SORT - bad for large data sets -> n ^ 2
+function selectionSort(arr) {
+
+  for (let i = 0; i < arr.length; i++) {
+    let indexOfMin = i;
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[indexOfMin] > arr[j]) {
+        indexOfMin = j;
+      }
+    }
+    if (indexOfMin !== i) {
+      let lesser = arr[indexOfMin];
+      arr[indexOfMin] = arr[i];
+      arr[i] = lesser;
+    }
+  }
+
+  return arr;
+}
+
+selectionSort([5,4,3,99,1,0]);
+
+/* ==========================================
+### SORTING WITH MERGE SORT
+==============================================*/
+//* n * log(n)
+function mergeSort(arr) {
+  if (arr.length === 1) return arr;
+
+  const center = Math.floor(arr.length / 2);
+  //* second index of [slice] means till [center] BUT NOT INCLUDING! 
+  const leftSide = arr.slice(0, center); //* [1,2,3,4] => slice(0, 2) -> till index 2 -> 1[0], 2[1] | => 3[2], 4[3]
+  const rightSide = arr.slice(center);
+
+  return merge(mergeSort(leftSide), mergeSort(rightSide));
+}
+
+//! [MERGE] function gets TWO SORTED arrays and merge them toghther in ONE SORTED ARRAY
+function merge(left, right) {
+  const results = [];
+
+  while (left.length && right.length) {
+    if (left[0] < right[0]) {
+      results.push(left.shift());
+    } else {
+      results.push(right.shift());
+    }
+  }
+
+  return [...results, ...left, ...right];
+}
+
+/* ==========================================
+### GENERATORS SECTION
+==============================================*/
 function * numbers() {
   let res = 1 + 1;
   return 20 + (yield res); //! [return 20 + ...] -> this part is never accessed BUT, see below
@@ -939,7 +1255,7 @@ generator.next(10); //* {value: 30, done: true} => here we insert a value!
 function * list1() {
   yield 1;
   yield 2;
-  yield * list2(); //* <= pass another generator
+  yield * list2(); //* <= pass another generator, deleagte another Generator
   yield 6;
   yield 7;
 }
@@ -951,11 +1267,12 @@ function * list2() {
 
 let listsGen = list1();
 
+//* [for of] loop with generator
 for (let val of listsGen) {
   console.log('val => ', val);
 }
 
-class Tree {
+class TreeWithGenerator {
   constructor(value = null, children = []) {
     this.value = value;
     this.children = children;
@@ -964,22 +1281,54 @@ class Tree {
   * printValues() {
     yield this.value; //* first call -> yields this
     for (let child of this.children) { //* second call will delegate to other generators
-      yield * child.printValues(); //* Recursive behaviour
+      yield * child.printValues(); //* Delegate to other Generators -> Recursive behaviour
     }
   }
 }
 
-const tree = new Tree(1, [
-  new Tree(2, [new Tree(4)]),
-  new Tree(3),
+const treeWithGen = new TreeWithGenerator(1, [
+  new TreeWithGenerator(2, [new TreeWithGenerator(4)]),
+  new TreeWithGenerator(3),
 ]);
 
-for (let value of tree.printValues()) {
+for (let value of treeWithGen.printValues()) {
   console.log('value >> ', value);
 }
 
 /* ==========================================
-### LINKED LIST - WITH ITERATORS
+### GET THE CLOSEST POINT
 ==============================================*/
+// This is not a part from this course, but is interesting
+// It was part of an interfiew. We have to find the closest point in coordinate system
+var points = [
+  {x: 12, y: 18},
+  {x: 20, y: 30},
+  {x: 5, y: 40},
+  {x: 100, y: 2},
+  {x: 1, y: -1},
+  {x: 2, y: 0},
+  {x: 10, y: 20},
+];
 
+function getDistance(point) {
+  return Math.pow(point.x, 2) + Math.pow(point.y, 2);
+}
 
+var closest = points.slice(1).reduce(function(min, point) {
+    debugger;
+  if (getDistance(point) < min.distance) {
+    min.point = point;
+    min.distance = getDistance(point);
+  }
+    debugger;
+  return min;
+}, {
+    point: points[0], 
+    distance: getDistance(points[0]),
+}).point;
+
+closest;
+
+/* ==========================================
+### ...
+==============================================*/
