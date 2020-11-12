@@ -1299,7 +1299,7 @@ for (let value of treeWithGen.printValues()) {
 ### GET THE CLOSEST POINT
 ==============================================*/
 // This is not a part from this course, but is interesting
-// It was part of an interfiew. We have to find the closest point in coordinate system
+// It was part of an interжiew. We have to find the closest point in coordinate system
 var points = [
   {x: 12, y: 18},
   {x: 20, y: 30},
