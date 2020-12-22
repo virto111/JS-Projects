@@ -1296,7 +1296,7 @@ for (let value of treeWithGen.printValues()) {
 }
 
 /* ==========================================
-### GET THE CLOSEST POINT
+### GET THE CLOSEST POINT TO (0, 0)
 ==============================================*/
 // This is not a part from this course, but is interesting
 // It was part of an interжiew. We have to find the closest point in coordinate system
@@ -1326,6 +1326,105 @@ var closest = points.slice(1).reduce(function(min, point) {
 }).point;
 
 closest;
+
+/* ==========================================
+### GET THE CLOSEST POINT TO (INT, INT)
+==============================================*/
+
+var xk; // x koefficient => 1 || -1
+var yk; // y koefficient => 1 || -1
+var offsetPosition;
+
+// var p1 = {x: 4, y: 4};
+// var p2 = {x: 4, y: -4};
+// var p3 = {x: -4, y: -4};
+// var p4 = {x: -4, y: 4};
+// var points = [p1, p2, p3, p4];
+var generalPosition = { x: -2, y: -2 };
+// var generalPosition = {x: 0, y: 0};
+// var generalPosition = {x: 0, y: -2};
+
+
+function calculateK(position, param) {
+  return position[param] === 0 ? 0 : position[param] > 0 ? -1 : 1;
+}
+
+function getOffsetPosition(position, xk, yk) {
+  return { x: Math.abs(position.x) * xk, y: Math.abs(position.y) * yk };
+}
+
+xk = calculateK(generalPosition, 'x');
+yk = calculateK(generalPosition, 'y');
+offsetPosition = getOffsetPosition(generalPosition, xk, yk);
+
+
+var newPositions = points.map(position => {
+  return {
+    x: offsetPosition.x + position.x,
+    y: offsetPosition.y + position.y,
+  };
+});
+
+
+/* ==========================================
+### GET THE CLOSEST POINT TO (INT, INT) - FULL VERSION
+==============================================*/
+
+// 1, -1 => wanted result
+var generalPosition = { x: -2, y: -2 };
+
+var points = [
+  { x: 12, y: 18 },
+  { x: 20, y: 30 },
+  { x: 5, y: 40 },
+  { x: 100, y: 2 },
+  { x: 1, y: -1 },  // wanted result
+  { x: 2, y: 0 },
+  { x: 10, y: 20 },
+];
+
+var xk;
+var yk;
+var offsetPosition;
+
+function calculateK(position, param) {
+  return position[param] === 0 ? 0 : position[param] > 0 ? -1 : 1;
+}
+
+function getOffsetPosition(position, xk, yk) {
+  return { x: Math.abs(position.x) * xk, y: Math.abs(position.y) * yk };
+}
+
+function getDistance(point) {
+  return Math.pow(point.x, 2) + Math.pow(point.y, 2);
+}
+
+xk = calculateK(generalPosition, 'x');
+yk = calculateK(generalPosition, 'y');
+offsetPosition = getOffsetPosition(generalPosition, xk, yk);
+
+
+var newPositions = points.map(position => {
+  return {
+    x: offsetPosition.x + position.x,
+    y: offsetPosition.y + position.y,
+    original: position        // JUST KEEP THE ORIGINAL COORDINATES!!! 
+  };
+});
+
+var closest = newPositions.slice(1).reduce(function (min, point) {
+  if (getDistance(point) < min.distance) {
+    min.point = point;
+    min.distance = getDistance(point);
+  }
+  return min;
+}, {  // reduce starts with the FIRST POINT, that is WHY we slice the FIRST POINT [newPositions.slice(1)]
+  point: newPositions[0],
+  distance: getDistance(newPositions[0]),
+}).point;
+
+closest;
+closest.original; // => (1, -1) => Verry Happy :-)
 
 /* ==========================================
 ### ...
