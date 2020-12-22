@@ -1427,5 +1427,54 @@ closest;
 closest.original; // => (1, -1) => Verry Happy :-)
 
 /* ==========================================
+### GET THE CLOSEST POINT TO (INT, INT) - SIMPLEST VERSION
+==============================================*/
+
+// This solution is NOT enough tested!!!
+
+// 1, -1 => wanted result
+var generalPosition = { x: -2, y: -2 };
+
+var points = [
+  { x: 12, y: 18 },
+  { x: 20, y: 30 },
+  { x: 5, y: 40 },
+  { x: 100, y: 2 },
+  { x: 1, y: -1 },  // wanted result
+  { x: 2, y: 0 },
+  { x: 10, y: 20 },
+];
+
+function getSideLength(s1, s2) {
+    if ((Math.abs(s1) + Math.abs(s2)) !== (s1 + s2)) {
+        // different signs => add abs values
+        return Math.abs(s1) + Math.abs(s2);
+    }
+    // else => subtract them and return abs value
+    return Math.abs(Math.abs(s1) - Math.abs(s2));
+}
+
+var paralepipeds = points.map((point) => {
+    return {
+        x: getSideLength(generalPosition.x, point.x),
+        y: getSideLength(generalPosition.y, point.y),
+        original: point
+    };
+});
+
+var distances = paralepipeds.map(point => {
+    return {
+        offset: Math.sqrt(Math.pow(point.x, 2), Math.pow(point.y, 2)),
+        original: point.original
+    };
+});
+
+var closest = distances.reduce((curr, next) => {
+  return (curr.offset < next.offset) ? curr : mext;
+}); 
+
+closest.original; // => (1, -1) => Verry Happy :-)
+
+/* ==========================================
 ### ...
 ==============================================*/
