@@ -1476,5 +1476,61 @@ var closest = distances.reduce((curr, next) => {
 closest.original; // => (1, -1) => Verry Happy :-)
 
 /* ==========================================
+### MULTY-DIMENTIONAL ARRAY
+==============================================*/
+
+Array.from({length: 5}, () => {
+  return Array.from({length: 4}, () => {
+    return Array.from({length: 3}, () => 0);
+  })
+});
+
+// [!!!] Това долу не работи, може да го погледна някой ден 
+function mul(index, ...dimensions) {
+  return Array.from({length: dimensions[index]}, () => {
+      if (index === (dimensions.length - 1)) {
+          return Array.from({length: dimensions[index]}, () => 0);
+      }
+      return mul(++index, ...dimensions);
+  });
+}
+
+// [!!!] - това долу работи! НО нества с едно ниво повече!
+//         Разликата с горното е, че реасайнвам при всяка итерация 
+//         параметрите на рекурсивната функция 
+function mul(index, ...dimensions) {
+  return Array.from({length: dimensions[index]}, () => {
+      var i = index;
+      var d = [...dimensions];
+      if (i === (d.length - 1)) {
+          return Array.from({length: d[i]}, () => 0);
+      }
+      return mul(++i, ...d);
+  });
+}
+
+var a = mul(0, 3, 2);
+
+// Долния пример работи
+function initMultiArray(...dimensions) {
+  function initMultiArrayRec(dimIndex) {
+    if (dimIndex >= dimensions.length) {
+      return 0;
+    } else {
+      const dim = dimensions[dimIndex];
+      const arr = [];
+      for (let i = 0; i < dim; i++) {
+        arr.push(initMultiArrayRec(dimIndex + 1));
+      }
+      return arr;
+    }
+  }
+  return initMultiArrayRec(0);
+}
+
+var arr = initMultiArray(4,3,2);
+
+
+/* ==========================================
 ### ...
 ==============================================*/
