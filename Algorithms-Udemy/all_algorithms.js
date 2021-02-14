@@ -1446,12 +1446,13 @@ var points = [
 ];
 
 function getSideLength(s1, s2) {
-    if ((Math.abs(s1) + Math.abs(s2)) !== (s1 + s2)) {
-        // different signs => add abs values
-        return Math.abs(s1) + Math.abs(s2);
+    // check the signs of the numbers 
+    if (Math.sign(s1) === Math.sign(s2)) {
+      // same signs => subtract them and return abs value
+      return Math.abs(Math.abs(s1) - Math.abs(s2));
     }
-    // else => subtract them and return abs value
-    return Math.abs(Math.abs(s1) - Math.abs(s2));
+    // else => different signs => add abs values
+    return Math.abs(s1) + Math.abs(s2);
 }
 
 var paralepipeds = points.map((point) => {
@@ -1474,6 +1475,20 @@ var closest = distances.reduce((curr, next) => {
 }); 
 
 closest.original; // => (1, -1) => Verry Happy :-)
+
+/*
+  Interesting checking => are numbers with the same SIGN:
+  *-1- Math.sign(s1) === Math.sign(s2)
+      Most straightforward way.
+      ! Also this case ignores 0 to have a sign:
+      Math.sign(0) === Math.sign(-1) => false
+      Math.sign(0) === Math.sign(1)  => false
+  *-2- (s1 < 0) === (s2 < 0) 
+      ! - we don't use > sign since 0 is positive. That is the reason to have -0!
+  *-3- (s1 ^ s2) >= 0
+      ! - XOR operator - compares the bits, and if they are the same, it sets the resulting bit to 0. 
+             If the sign bits are the same, the resulting sign-bit is 0, and thus a positive (or 0) value.
+*/
 
 /* ==========================================
 ### MULTY-DIMENTIONAL ARRAY
