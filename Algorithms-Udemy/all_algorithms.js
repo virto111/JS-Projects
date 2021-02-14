@@ -1455,7 +1455,7 @@ function getSideLength(s1, s2) {
     return Math.abs(s1) + Math.abs(s2);
 }
 
-var paralepipeds = points.map((point) => {
+var rectangles = points.map((point) => {
     return {
         x: getSideLength(generalPosition.x, point.x),
         y: getSideLength(generalPosition.y, point.y),
@@ -1463,7 +1463,7 @@ var paralepipeds = points.map((point) => {
     };
 });
 
-var distances = paralepipeds.map(point => {
+var distances = rectangles.map(point => {
     return {
         offset: Math.sqrt(Math.pow(point.x, 2), Math.pow(point.y, 2)),
         original: point.original
