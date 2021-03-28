@@ -793,7 +793,7 @@ class LinkedList {
       if (!node.next) {
         return node;
       }
-      node = node.next;
+      node = node.next; 
     }
   }
 
@@ -1547,5 +1547,195 @@ var arr = initMultiArray(4,3,2);
 
 
 /* ==========================================
+### First Unique Character
+==============================================*/
+
+// 'hhello' => 'e' is first unique character index
+// we must return => char index | -1
+// Solution #1
+function firstUniqueChar(str) {  
+  let characters = {};
+  let index
+
+  // Time complexity: it is loop => (n)
+  for (char of str) {
+    if (characters[char]) {
+      characters[char]++;
+    } else {
+      characters[char] = 1;
+    }
+  }
+
+  // Time complexity: it is loop => (n)
+  for (let i = 0; i < str.length; i++) {
+    let strChar = str[i];
+
+    if (characters[strChar] === 1) {
+      return i;
+    }
+  }
+
+  // Time complexity of two loops is: n + n = 2n => O(n) - Linear Time Complexity
+
+  return -1;
+}
+
+// Solution #2 - using indexOf() && lastIndexOf()
+function firstUniqueChar(str) {  
+  // Time complexity: it is loop => (n)
+  for (char of str) {
+    if (str.indexOf(char) === str.lastIndexOf(char)) {
+      return str.indexOf(char);
+    }
+  }
+
+  return -1;
+}
+
+
+/* ==========================================
+### Longest Common Subsequence 
+==============================================*/
+
+// Given two strings: 'text1' and 'text2' return their longest common subsequence
+// !!! Това не означава Най-голямата Еднаква част между двата стринга! Виж долния пример
+// if there is no common subsequence - return 0
+// if there is subsequences - return the number of characters of the Longest Subsequence! 
+// 'AbCdE' | 'ACD' - не са последователни, но са валиден кейс! 
+// 'abc' | 'cdf' -> 0 - no common characters
+
+// * - characters must be lowercase for these example
+// ? - this is two dimentianal Dynamic Programming
+
+// 'ace'   - text1
+// 'abcde' - text 2
+// So, let's make two-dimentional tracker
+
+/*
+    a b c d e          a b c d e  
+  0 0 0 0 0 0        0 0 0 0 0 0
+a 0 0 0 0 0 0  =>  a 0 0 0 0 0 0
+c 0 0 0 0 0 0      c 0 0 0 0 0 0
+e 0 0 0 0 0 0      e 0 0 0 0 0 0
+
+Think of the Rows as Outer Loop and Columns as the Inner Loop
+*/
+
+//           'ace'   'abcde'
+function LCS(text1, text2) {
+  // we need Matrix
+  const dp = [];
+
+  // Generate additional Row on top and additional Col on the Left
+  for (let i = 0; i < text1.length + 1; i++) {
+    dp.push(Array(text2.length + 1).fill(0));
+  }
+}
+
+/* ==========================================
+### Flatten Nested Array
+==============================================*/
+
+let arr = [1,2,[3,[4,[5,[6],7],8,9,10],11,[12],13,[14,15,[16]]],17]
+
+function flatten(arr) {
+  return arr.reduce((acc, val) => {
+      if (Array.isArray(val)) {
+          return acc.concat(flatten(val));
+      } else {
+          return acc.concat(val)
+      }
+  }, []);
+}
+
+flatten(arr);
+
+/* ==========================================
 ### ...
 ==============================================*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
